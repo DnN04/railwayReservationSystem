@@ -1,0 +1,183 @@
+# Product Requirements Document (PRD)
+
+## Project Title
+
+GenZ Railway Reservation & Management System
+
+---
+
+## 1. Overview
+
+This project aims to redesign the traditional railway ticket booking system into a modern, user-friendly, and visually appealing web application. The system will provide seamless ticket booking, user authentication, and administrative control, along with enhanced UI/UX and smart features.
+
+---
+
+## 2. Objectives
+
+* Replace outdated railway UI with modern GenZ-friendly design
+* Implement a fully functional ticket booking system
+* Demonstrate strong DBMS concepts (normalization, joins, triggers)
+* Provide role-based access (User and Admin)
+* Simulate intelligent features like alternate route suggestions and live tracking
+
+---
+
+## 3. Target Users
+
+* General Users (Passengers booking tickets)
+* Admins (Railway authorities managing system data)
+
+---
+
+## 4. Core Features
+
+### 4.1 User Features
+
+* User Signup & Login (JWT-based authentication)
+* Search trains by source, destination, and date
+* View train details (availability, fare, class)
+* Book tickets by entering passenger details
+* Make payment (simulated)
+* View booked tickets (My Tickets dashboard)
+
+---
+
+### 4.2 Admin Features
+
+* Admin Login (role-based access)
+* Add new trains
+* Update train details
+* Delete trains
+* Manage fares
+* View all bookings
+
+---
+
+### 4.3 Smart Features (Enhancements)
+
+* Suggest alternate routes if direct trains are unavailable
+* Provide optional transport suggestions (bus/flight using mock data)
+* Simulated live train tracking using map visualization
+
+---
+
+## 5. System Architecture
+
+### Frontend
+
+* React.js
+* Tailwind CSS
+* Framer Motion (animations)
+
+### Backend
+
+* Node.js with Express
+
+### Database
+
+* MySQL (Workbench)
+
+---
+
+## 6. Database Design
+
+### Tables
+
+* USERS (id, name, email, password, role)
+* PASSENGER (passenger_id, name, age, gender)
+* TRAIN (train_code, train_name, source, destination)
+* TRAIN_FARE (train_code, class, fare)
+* TICKET_RESERVATION (pnr_no, user_id, train_code, status, journey_date)
+* PAYMENT (payment_id, pnr_no, amount, mode)
+
+---
+
+### Relationships
+
+* USERS → TICKET_RESERVATION (1:N)
+* TRAIN → TICKET_RESERVATION (1:N)
+* TICKET_RESERVATION → PAYMENT (1:1)
+
+---
+
+### DBMS Concepts Used
+
+* Normalization up to 3NF/BCNF
+* Joins (Passenger + Reservation + Train)
+* Views (Booked Tickets View)
+* Triggers:
+
+  * Auto-confirm ticket after payment
+  * Prevent invalid payment entries
+
+---
+
+## 7. API Endpoints
+
+### Authentication
+
+* POST /api/auth/signup
+* POST /api/auth/login
+
+### User APIs
+
+* GET /api/trains
+* POST /api/book-ticket
+* GET /api/my-tickets
+
+### Admin APIs
+
+* POST /api/admin/add-train
+* PUT /api/admin/update-train
+* DELETE /api/admin/delete-train
+* GET /api/admin/all-bookings
+
+---
+
+## 8. UI/UX Requirements
+
+* Dark theme with glassmorphism
+* Smooth animations and transitions
+* Card-based layout
+* Responsive design
+* Clean navigation and user flow
+* Separate dashboards for user and admin
+
+---
+
+## 9. Non-Functional Requirements
+
+* Fast response time
+* Secure authentication (JWT + hashed passwords)
+* Scalable backend structure
+* Clean modular code
+
+---
+
+## 10. Constraints
+
+* Real railway APIs will not be used
+* Live tracking and transport suggestions will be simulated
+* Focus is on DBMS concepts and full-stack implementation
+
+---
+
+## 11. Success Criteria
+
+* User can successfully register, login, and book tickets
+* Admin can manage trains and view bookings
+* Database operations work correctly with constraints and triggers
+* UI is modern and responsive
+* Project demonstrates strong DBMS and full-stack concepts
+
+---
+
+## 12. Future Scope
+
+* Integration with real railway APIs
+* Real-time seat availability
+* Online payment gateway
+* Mobile app version
+* AI-based route optimization
+
+---

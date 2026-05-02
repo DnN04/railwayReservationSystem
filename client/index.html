@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Velocity Rail | Next-Gen Transit</title>
+    <meta name="description" content="Next-generation transit logic for the modern pioneer. Speed. Luxury. Total control." />
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@300;400;500;600;700;900&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+
+    <!-- Tailwind Custom Theme Config -->
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-surface": "#e5e2e3",
+              "surface-container-high": "#2a2a2b",
+              "on-tertiary-fixed-variant": "#005322",
+              "tertiary": "#00e46b",
+              "surface-bright": "#3a393a",
+              "on-secondary-fixed-variant": "#004f53",
+              "on-error-container": "#ffdad6",
+              "tertiary-fixed": "#66ff8f",
+              "inverse-surface": "#e5e2e3",
+              "on-secondary-container": "#006c71",
+              "on-tertiary": "#003915",
+              "secondary-fixed-dim": "#00dce5",
+              "surface-tint": "#ebb2ff",
+              "on-primary-fixed": "#320047",
+              "surface-dim": "#131314",
+              "primary": "#ebb2ff",
+              "surface": "#131314",
+              "on-tertiary-container": "#ffffff",
+              "on-surface-variant": "#d4c0d7",
+              "on-secondary": "#003739",
+              "secondary-container": "#00f4fe",
+              "primary-container": "#bc13fe",
+              "on-secondary-fixed": "#002021",
+              "outline": "#9d8ba0",
+              "surface-container-low": "#1c1b1c",
+              "surface-container-highest": "#353436",
+              "on-primary": "#520072",
+              "on-background": "#e5e2e3",
+              "secondary-fixed": "#63f7ff",
+              "tertiary-container": "#00893d",
+              "background": "#131314",
+              "on-primary-container": "#ffffff",
+              "inverse-primary": "#9800d0",
+              "on-tertiary-fixed": "#00210a",
+              "on-error": "#690005",
+              "surface-container": "#201f20",
+              "on-primary-fixed-variant": "#74009f",
+              "surface-container-lowest": "#0e0e0f",
+              "error": "#ffb4ab",
+              "tertiary-fixed-dim": "#00e46b",
+              "secondary": "#e6feff",
+              "primary-fixed": "#f8d8ff",
+              "error-container": "#93000a",
+              "inverse-on-surface": "#313031",
+              "outline-variant": "#504254",
+              "primary-fixed-dim": "#ebb2ff",
+              "surface-variant": "#353436"
+            },
+            borderRadius: {
+              "DEFAULT": "0.25rem",
+              "lg": "0.5rem",
+              "xl": "0.75rem",
+              "full": "9999px"
+            },
+            spacing: {
+              "card-gap": "20px",
+              "container-padding": "24px",
+              "gutter": "16px",
+              "base": "8px"
+            },
+            fontFamily: {
+              "body-base": ["Inter"],
+              "label-caps": ["Space Grotesk"],
+              "headline-md": ["Space Grotesk"],
+              "display-lg": ["Space Grotesk"],
+              "data-mono": ["Space Grotesk"]
+            },
+            fontSize: {
+              "body-base": ["16px", {"lineHeight": "1.6", "letterSpacing": "0", "fontWeight": "400"}],
+              "label-caps": ["12px", {"lineHeight": "1", "letterSpacing": "0.1em", "fontWeight": "700"}],
+              "headline-md": ["24px", {"lineHeight": "1.2", "letterSpacing": "0.01em", "fontWeight": "600"}],
+              "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+              "data-mono": ["14px", {"lineHeight": "1.4", "letterSpacing": "0", "fontWeight": "500"}]
+            }
+          }
+        }
+      }
+    </script>
+
+    <style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      .glass-card {
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(0, 0, 0, 0.2) 100%);
+      }
+      .neon-glow-primary {
+        box-shadow: 0 0 20px rgba(188, 19, 254, 0.4);
+      }
+      .neon-glow-primary:hover {
+        box-shadow: 0 0 35px rgba(188, 19, 254, 0.7);
+      }
+      .neon-glow-secondary {
+        box-shadow: 0 0 15px rgba(0, 245, 255, 0.4);
+      }
+      .scanning-bar::after {
+        content: '';
+        position: absolute;
+        top: 0; left: -100%; width: 50%; height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(0, 245, 255, 0.4), transparent);
+        animation: scan 3s linear infinite;
+      }
+      .scan-animation {
+        position: relative;
+        overflow: hidden;
+      }
+      .scan-animation::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 50%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(0, 245, 255, 0.2), transparent);
+        animation: scan 3s infinite linear;
+      }
+      .scanline-progress {
+        position: relative;
+        overflow: hidden;
+      }
+      .scanline-progress::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 50%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(0, 245, 255, 0.6), transparent);
+        animation: scan 2s infinite linear;
+      }
+      .scan-line {
+        height: 2px;
+        background: linear-gradient(90deg, transparent, #ebb2ff, transparent);
+        position: absolute;
+        width: 100%;
+        top: 50%;
+        left: 0;
+        animation: scanLine 2s linear infinite;
+      }
+      @keyframes scan {
+        0% { left: -100%; }
+        100% { left: 200%; }
+      }
+      @keyframes scanLine {
+        0% { top: 0%; }
+        100% { top: 100%; }
+      }
+      .mesh-gradient {
+        background-color: #050505;
+        background-image:
+          radial-gradient(at 0% 0%, rgba(188, 19, 254, 0.15) 0px, transparent 50%),
+          radial-gradient(at 100% 100%, rgba(0, 245, 255, 0.1) 0px, transparent 50%);
+      }
+      .glass-panel {
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0) 100%);
+      }
+      .neon-glow:hover {
+        box-shadow: 0 0 20px rgba(188, 19, 254, 0.6);
+      }
+      .bg-mesh {
+        background-color: #050505;
+        background-image:
+          radial-gradient(at 0% 0%, rgba(188, 19, 254, 0.15) 0px, transparent 50%),
+          radial-gradient(at 100% 100%, rgba(0, 245, 255, 0.15) 0px, transparent 50%);
+      }
+      .neon-grid {
+        background-size: 40px 40px;
+        background-image:
+          linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+          linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+      }
+      .neon-glow-red {
+        text-shadow: 0 0 10px rgba(255, 180, 171, 0.5), 0 0 20px rgba(255, 180, 171, 0.3);
+      }
+    </style>
+  </head>
+  <body class="bg-[#050505]">
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
