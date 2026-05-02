@@ -65,7 +65,7 @@ function AdminDashboard() {
   const TABS = ['overview', 'bookings', 'trains', 'add-train']
 
   return (
-    <div className="bg-[#050505] text-[#e5e2e3] font-body-base min-h-screen flex">
+    <div className="bg-transparent text-[#e5e2e3] font-body-base min-h-screen flex">
       {/* Sidebar */}
       <nav className="fixed left-0 top-0 h-full z-40 w-64 border-r border-white/10 flex flex-col font-['Space_Grotesk'] uppercase tracking-widest text-xs"
         style={{ background: 'rgba(5,5,5,0.9)', backdropFilter: 'blur(20px)' }}>

@@ -32,7 +32,7 @@ function AdminLogin() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-[#050505] font-body-base text-on-surface">
+    <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-transparent font-body-base text-on-surface">
       {/* Background Layer */}
       <div className="absolute inset-0 z-0">
         <img
@@ -48,7 +48,7 @@ function AdminLogin() {
         <div className="glass-card rounded-2xl p-10 flex flex-col items-center gap-2 border border-white/10" style={{ backdropFilter: 'blur(20px)', background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%)' }}>
           {/* Brand Identity */}
           <div className="mb-6 text-center">
-            <h1 className="font-headline-md text-headline-md text-[#ebb2ff] tracking-tighter uppercase mb-1">VELOCITY RAIL</h1>
+            <h1 className="font-headline-md text-headline-md text-[#ebb2ff] tracking-tighter uppercase mb-1">RAIL BANDHU</h1>
             <p className="font-label-caps text-label-caps text-[#d4c0d7]">Nexus-1 Protocol Interface</p>
           </div>
 

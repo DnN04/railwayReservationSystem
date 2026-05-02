@@ -133,14 +133,16 @@ const getTrains = async (req, res) => {
 // Trigger auto-confirms ticket when PAYMENT.status = 'Success'
 const bookTicket = async (req, res) => {
   const user_id = req.user.id;
-  const { train_code, class: ticketClass, journey_date, passenger, payment } = req.body;
+  const { train_code, class: ticketClass, journey_date, passengers, payment } = req.body;
 
   // Validation
-  if (!train_code || !ticketClass || !journey_date || !passenger || !payment) {
+  if (!train_code || !ticketClass || !journey_date || !passengers || !Array.isArray(passengers) || passengers.length === 0 || !payment) {
     return res.status(400).json({ message: 'All booking fields are required.' });
   }
-  if (!passenger.name || !passenger.age || !passenger.gender) {
-    return res.status(400).json({ message: 'Passenger name, age and gender are required.' });
+  for (const p of passengers) {
+    if (!p.name || !p.age || !p.gender) {
+      return res.status(400).json({ message: 'Passenger name, age and gender are required.' });
+    }
   }
   if (!payment.mode) {
     return res.status(400).json({ message: 'Payment mode is required.' });
@@ -161,43 +163,49 @@ const bookTicket = async (req, res) => {
     }
     const fare = parseFloat(fares[0].fare);
 
-    // 2. Insert PASSENGER
-    const [paxResult] = await conn.execute(
-      'INSERT INTO PASSENGER (name, age, gender) VALUES (?, ?, ?)',
-      [passenger.name, passenger.age, passenger.gender]
-    );
-    const passenger_id = paxResult.insertId;
+    let totalFare = 0;
+    const tickets = [];
 
-    // 3. Generate a simple seat number
-    const seat_no = `${ticketClass[0]}${Math.floor(Math.random() * 100) + 1}`;
+    // Loop through passengers
+    for (const passenger of passengers) {
+      // 2. Insert PASSENGER
+      const [paxResult] = await conn.execute(
+        'INSERT INTO PASSENGER (name, age, gender) VALUES (?, ?, ?)',
+        [passenger.name, passenger.age, passenger.gender]
+      );
+      const passenger_id = paxResult.insertId;
 
-    // 4. Insert TICKET_RESERVATION (status starts as 'Pending')
-    const [resResult] = await conn.execute(
-      `INSERT INTO TICKET_RESERVATION
-         (user_id, passenger_id, train_code, class, status, journey_date, seat_no)
-       VALUES (?, ?, ?, ?, 'Pending', ?, ?)`,
-      [user_id, passenger_id, train_code, ticketClass, journey_date, seat_no]
-    );
-    const pnr_no = resResult.insertId;
+      // 3. Generate a simple seat number
+      const seat_no = `${ticketClass[0]}${Math.floor(Math.random() * 100) + 1}`;
 
-    // 5. Insert PAYMENT with status='Success'
-    //    → TRIGGER after_payment_insert fires and sets TICKET_RESERVATION.status = 'Confirmed'
-    await conn.execute(
-      `INSERT INTO PAYMENT (pnr_no, amount, mode, status) VALUES (?, ?, ?, 'Success')`,
-      [pnr_no, fare, payment.mode]
-    );
+      // 4. Insert TICKET_RESERVATION
+      const [resResult] = await conn.execute(
+        `INSERT INTO TICKET_RESERVATION
+           (user_id, passenger_id, train_code, class, status, journey_date, seat_no)
+         VALUES (?, ?, ?, ?, 'Pending', ?, ?)`,
+        [user_id, passenger_id, train_code, ticketClass, journey_date, seat_no]
+      );
+      const pnr_no = resResult.insertId;
+
+      // 5. Insert PAYMENT
+      await conn.execute(
+        `INSERT INTO PAYMENT (pnr_no, amount, mode, status) VALUES (?, ?, ?, 'Success')`,
+        [pnr_no, fare, payment.mode]
+      );
+
+      totalFare += fare;
+      tickets.push({ pnr_no, seat_no, passenger: passenger.name });
+    }
 
     await conn.commit();
 
     return res.status(201).json({
-      message:  'Ticket booked & confirmed successfully.',
-      pnr_no,
-      seat_no,
+      message:  'Tickets booked & confirmed successfully.',
+      tickets,
       train_code,
       class:    ticketClass,
       journey_date,
-      passenger: passenger.name,
-      amount:   fare,
+      total_amount: totalFare,
       payment_mode: payment.mode,
     });
   } catch (err) {
@@ -213,9 +221,9 @@ const bookTicket = async (req, res) => {
 // Body: { connections: [{train_code, class, journey_date}], passenger: { name, age, gender }, payment: { mode } }
 const bookMultiTicket = async (req, res) => {
   const user_id = req.user.id;
-  const { connections, passenger, payment } = req.body;
+  const { connections, passengers, payment } = req.body;
 
-  if (!connections || connections.length !== 2 || !passenger || !payment) {
+  if (!connections || connections.length !== 2 || !passengers || !Array.isArray(passengers) || passengers.length === 0 || !payment) {
     return res.status(400).json({ message: 'Invalid multi-booking payload.' });
   }
 
@@ -223,49 +231,51 @@ const bookMultiTicket = async (req, res) => {
   try {
     await conn.beginTransaction();
 
-    // Insert Passenger
-    const [paxResult] = await conn.execute(
-      'INSERT INTO PASSENGER (name, age, gender) VALUES (?, ?, ?)',
-      [passenger.name, passenger.age, passenger.gender]
-    );
-    const passenger_id = paxResult.insertId;
-
     let totalFare = 0;
     const bookedLegs = [];
 
-    // Loop through connections
-    for (const leg of connections) {
-      // Get Fare
-      const [fares] = await conn.execute(
-        'SELECT fare FROM TRAIN_FARE WHERE train_code = ? AND class = ?',
-        [leg.train_code, leg.class]
+    // Loop through passengers
+    for (const passenger of passengers) {
+      // Insert Passenger
+      const [paxResult] = await conn.execute(
+        'INSERT INTO PASSENGER (name, age, gender) VALUES (?, ?, ?)',
+        [passenger.name, passenger.age, passenger.gender]
       );
-      if (fares.length === 0) throw new Error('Train class not found for ' + leg.train_code);
-      const fare = parseFloat(fares[0].fare);
-      totalFare += fare;
+      const passenger_id = paxResult.insertId;
 
-      // Create Reservation
-      const seat_no = `${leg.class[0]}${Math.floor(Math.random() * 100) + 1}`;
-      const [resResult] = await conn.execute(
-        `INSERT INTO TICKET_RESERVATION (user_id, passenger_id, train_code, class, status, journey_date, seat_no)
-         VALUES (?, ?, ?, ?, 'Pending', ?, ?)`,
-        [user_id, passenger_id, leg.train_code, leg.class, leg.journey_date, seat_no]
-      );
-      const pnr_no = resResult.insertId;
+      // Loop through connections
+      for (const leg of connections) {
+        // Get Fare
+        const [fares] = await conn.execute(
+          'SELECT fare FROM TRAIN_FARE WHERE train_code = ? AND class = ?',
+          [leg.train_code, leg.class]
+        );
+        if (fares.length === 0) throw new Error('Train class not found for ' + leg.train_code);
+        const fare = parseFloat(fares[0].fare);
+        totalFare += fare;
 
-      // Payment trigger will confirm ticket
-      await conn.execute(
-        `INSERT INTO PAYMENT (pnr_no, amount, mode, status) VALUES (?, ?, ?, 'Success')`,
-        [pnr_no, fare, payment.mode]
-      );
+        // Create Reservation
+        const seat_no = `${leg.class[0]}${Math.floor(Math.random() * 100) + 1}`;
+        const [resResult] = await conn.execute(
+          `INSERT INTO TICKET_RESERVATION (user_id, passenger_id, train_code, class, status, journey_date, seat_no)
+           VALUES (?, ?, ?, ?, 'Pending', ?, ?)`,
+          [user_id, passenger_id, leg.train_code, leg.class, leg.journey_date, seat_no]
+        );
+        const pnr_no = resResult.insertId;
 
-      bookedLegs.push({ train_code: leg.train_code, pnr_no, seat_no, fare });
+        // Payment trigger will confirm ticket
+        await conn.execute(
+          `INSERT INTO PAYMENT (pnr_no, amount, mode, status) VALUES (?, ?, ?, 'Success')`,
+          [pnr_no, fare, payment.mode]
+        );
+
+        bookedLegs.push({ train_code: leg.train_code, passenger: passenger.name, pnr_no, seat_no, fare });
+      }
     }
 
     await conn.commit();
     return res.status(201).json({
       message: 'Connecting tickets booked successfully.',
-      passenger: passenger.name,
       total_amount: totalFare,
       payment_mode: payment.mode,
       legs: bookedLegs

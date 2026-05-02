@@ -8,14 +8,15 @@ function Home() {
   const [source, setSource] = useState('')
   const [destination, setDestination] = useState('')
   const [date, setDate] = useState('')
+  const [guests, setGuests] = useState(1)
 
   const handleSearch = (e) => {
     e.preventDefault()
-    navigate(`/search?source=${source}&destination=${destination}&date=${date}`)
+    navigate(`/search?source=${source}&destination=${destination}&date=${date}&guests=${guests}`)
   }
 
   return (
-    <div className="font-body-base overflow-x-hidden" style={{ backgroundColor: '#050505', color: '#e5e2e3' }}>
+    <div className="font-body-base overflow-x-hidden" style={{ backgroundColor: 'transparent', color: '#e5e2e3' }}>
       <Navbar />
 
       {/* Header Section */}
@@ -83,7 +84,7 @@ function Home() {
               <label className="font-label-caps text-label-caps text-fuchsia-400 block px-1">Guests</label>
               <div className="relative">
                 <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">group</span>
-                <input className="w-full bg-white/5 border border-white/10 rounded-xl py-4 pl-12 pr-4 text-white focus:outline-none focus:border-fuchsia-500/50 transition-all" min="1" type="number" defaultValue="1" />
+                <input value={guests} onChange={(e) => setGuests(Math.min(2, Math.max(1, parseInt(e.target.value) || 1)))} className="w-full bg-white/5 border border-white/10 rounded-xl py-4 pl-12 pr-4 text-white focus:outline-none focus:border-fuchsia-500/50 transition-all" min="1" max="2" type="number" />
               </div>
             </div>
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="w-full md:w-auto">
@@ -124,75 +125,76 @@ function Home() {
             }
           }}
         >
-          {/* Large Main Card */}
-          <motion.div variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0 } }} className="md:col-span-2 group relative overflow-hidden rounded-[2rem] h-[400px] border border-white/10">
+          {/* Large Main Card - KR-202 */}
+          <motion.div variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0 } }} className="md:col-span-2 group relative overflow-hidden rounded-[2rem] h-[400px] border border-white/10 isolate z-0">
             <img
-              className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuDsXj1Mpjbejfw2zDYMjPhtCT9ZueYiaYeEkAPLw8w_4WxSa9B_obIxhfXUw7S7R7KAQPez9dADK31n9NTPARhzB-QCb2kN8ynE2-KaSIb3NoEMCXGphVlYLS2R3tuSg8zm6hJ-qycDO34KYDAmJBv1uNLE3hADWqk_dRO6BqnyORgoYhwlzmxk4_dZzF-4OwRQoK_lRY9ixilVYNu1A5DIUIoK9IOx9G7V-wtp4b227Fd8rNW3a3es4aZ_ilJLWNUPYitK88il6BM"
-              alt="Neo Tokyo Express futuristic cityscape"
+              className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-110 -z-10"
+              src="/images/desi_delhi_shimla.png"
+              alt="Himalayan Queen"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
-            <div className="absolute bottom-0 left-0 w-full p-8 flex justify-between items-end">
+            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent -z-10"></div>
+            <div className="absolute bottom-0 left-0 w-full p-8 flex flex-col md:flex-row justify-between items-start md:items-end gap-4 z-10">
               <div>
-                <span className="inline-block px-3 py-1 bg-[#00e46b]/10 border border-[#00e46b]/30 rounded-full text-[#00e46b] text-[10px] font-bold tracking-widest mb-3 uppercase">ON TIME • HYPER-SPEED</span>
-                <h3 className="font-display-lg text-4xl text-white">NEO TOKYO EXPRESS</h3>
-                <p className="text-on-surface-variant/80 font-data-mono">Non-stop service from Nexus-1 Hub</p>
+                <span className="inline-block px-3 py-1 bg-[#00e46b]/10 border border-[#00e46b]/30 rounded-full text-[#00e46b] text-[10px] font-bold tracking-widest mb-3 uppercase">KR-202 • ON TIME</span>
+                <h3 className="font-display-lg text-3xl md:text-4xl text-white">HIMALAYAN QUEEN</h3>
+                <p className="text-on-surface-variant/80 font-data-mono">Scenic toy train journey from Delhi to Shimla</p>
               </div>
               <div className="text-right">
                 <p className="text-fuchsia-400 font-label-caps">STARTING FROM</p>
-                <p className="text-3xl font-black text-white">$124.00</p>
+                <p className="text-3xl font-black text-white">₹300.00</p>
               </div>
             </div>
           </motion.div>
 
-          {/* Route Small 1 */}
-          <motion.div variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0 } }} className="group relative overflow-hidden rounded-[2rem] border border-white/10">
+          {/* Route Small 1 - KR-101 */}
+          <motion.div variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0 } }} className="group relative overflow-hidden rounded-[2rem] border border-white/10 isolate z-0">
             <img
-              className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuD4jb5BPrQVwI8crB1EuWwL7ujkYGFWZzz87-z8FdRJyVnajrBJbDLm6lt6VeFpaR7AKkUxx_gHZgao73__QbcEEh38PFC6HmD9UlwyuzgQBGuHc5u4EPEsvKiI1YAggFTmWqcBB9WY0w2tv_8rGwGIb1Bw2roIhhLC9sByfbnYaKRwObmd6_na0n0M8p3qCTCNwR3zsJZvPeLek7PA98386qMTZe_htZZlSoJanIGZIaLk3pWXX-GsHCSZNiyHa-wN6dAFjTKB_cg"
-              alt="Alpine dome mountain resort"
+              className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-110 -z-10"
+              src="/images/desi_mumbai_delhi.png"
+              alt="Vande Bharat Express"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
             <div className="absolute bottom-0 left-0 w-full p-6">
-              <h3 className="font-headline-md text-white mb-1">ALPINE DOME</h3>
-              <p className="text-on-surface-variant font-data-mono text-xs opacity-70 mb-4">Transit time: 02h 45m</p>
-              <Link to="/booking" className="block w-full py-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl font-label-caps text-white text-center hover:bg-[#bc13fe] transition-colors">BOOK PASS</Link>
+              <h3 className="font-headline-md text-white mb-1">VANDE BHARAT (KR-101)</h3>
+              <p className="text-on-surface-variant font-data-mono text-xs opacity-70 mb-4">Mumbai to Delhi • 06h 00m</p>
+              <Link to="/search?source=Mumbai&destination=Delhi" className="block w-full py-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl font-label-caps text-white text-center hover:bg-[#bc13fe] transition-colors">SEARCH ROUTE</Link>
             </div>
           </motion.div>
 
-          {/* Route Small 2 */}
-          <motion.div variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0 } }} className="group relative overflow-hidden rounded-[2rem] border border-white/10">
+          {/* Route Small 2 - KR-303 */}
+          <motion.div variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0 } }} className="group relative overflow-hidden rounded-[2rem] border border-white/10 isolate z-0">
             <img
-              className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuAXj8RF2iI1tL6IEnA6rLIbCvGKZB_SKBy6txalirysvnTR8brJKhfEN9kLyUkVgr0ummERgVymjVBcOpwX9y75uRxQsbQ11pD6WLCsWREJmHnyZl1YTN1aLMZuX7DL7xvxMxCIEBIHajP3DZo32nG_tpZmnF2HQH-LEFjZqP2MdG47hHquUWAMFst_JdTGFZ_RSgNRf6nzLkzSPz4AZLALOGydCxNcVsM8NkZ64eNQAZqTscTIyJxB178WaaRrf3DPw5IVG8RL4Hs"
-              alt="Azure coast Mediterranean city"
+              className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-110 -z-10"
+              src="/images/desi_chennai_goa.png"
+              alt="Konkan Kanya"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
             <div className="absolute bottom-0 left-0 w-full p-6">
-              <h3 className="font-headline-md text-white mb-1">AZURE COAST</h3>
-              <p className="text-on-surface-variant font-data-mono text-xs opacity-70 mb-4">Transit time: 04h 12m</p>
-              <Link to="/booking" className="block w-full py-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl font-label-caps text-white text-center hover:bg-[#bc13fe] transition-colors">BOOK PASS</Link>
+              <h3 className="font-headline-md text-white mb-1">KONKAN KANYA (KR-303)</h3>
+              <p className="text-on-surface-variant font-data-mono text-xs opacity-70 mb-4">Chennai to Goa • 08h 00m</p>
+              <Link to="/search?source=Chennai&destination=Goa" className="block w-full py-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl font-label-caps text-white text-center hover:bg-[#bc13fe] transition-colors">SEARCH ROUTE</Link>
             </div>
           </motion.div>
 
-          {/* Silicon Valley Banner */}
-          <motion.div variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0 } }} className="md:col-span-2 group relative overflow-hidden rounded-[2rem] h-[300px] border border-white/10">
-            <div className="absolute inset-0 bg-[#1c1b1c]/80 backdrop-blur-md flex items-center px-12 gap-12">
+          {/* Silicon Valley Banner - KR-505 / KR-411 */}
+          <motion.div variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0 } }} className="md:col-span-2 group relative overflow-hidden rounded-[2rem] h-[300px] border border-white/10 isolate z-0">
+            <img className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-110 -z-10" src="/images/desi_pune_mumbai.png" alt="Deccan Queen" />
+            <div className="absolute inset-0 bg-[#1c1b1c]/80 backdrop-blur-md flex items-center px-12 gap-12 -z-10">
               <div className="flex-1">
                 <div className="flex gap-2 mb-4">
                   <span className="w-2 h-2 rounded-full bg-[#00f4fe] animate-pulse"></span>
-                  <span className="text-[10px] font-label-caps text-[#00f4fe] tracking-widest">LIVE AVAILABILITY</span>
+                  <span className="text-[10px] font-label-caps text-[#00f4fe] tracking-widest">KR-505 • PUNE TO MUMBAI</span>
                 </div>
-                <h3 className="font-display-lg text-3xl text-white mb-2">SILICON VALLEY SHUTTLE</h3>
-                <p className="text-on-surface-variant mb-6 max-w-md">Ultra-low latency connectivity onboard. Optimized for the remote executive.</p>
+                <h3 className="font-display-lg text-3xl text-white mb-2">DECCAN QUEEN</h3>
+                <p className="text-on-surface-variant mb-6 max-w-md">Iconic journey traversing the breathtaking Western Ghats in the monsoon.</p>
                 <div className="flex gap-8">
                   <div className="flex flex-col">
-                    <span className="text-[10px] text-slate-500 font-label-caps">FREQUENCY</span>
-                    <span className="text-white font-data-mono">EVERY 15 MIN</span>
+                    <span className="text-[10px] text-slate-500 font-label-caps">DURATION</span>
+                    <span className="text-white font-data-mono">02h 00m</span>
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-[10px] text-slate-500 font-label-caps">CLASS</span>
-                    <span className="text-white font-data-mono">PRIME ONLY</span>
+                    <span className="text-[10px] text-slate-500 font-label-caps">FARES START</span>
+                    <span className="text-white font-data-mono">₹250.00</span>
                   </div>
                 </div>
               </div>
@@ -201,55 +203,8 @@ function Home() {
         </motion.div>
       </section>
 
-      {/* Your Next Journey */}
-      <section className="bg-[#0e0e0f]/50 py-24 border-y border-white/5">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="mb-16">
-            <h2 className="font-headline-md text-headline-md text-white mb-2">YOUR NEXT JOURNEY</h2>
-            <p className="text-on-surface-variant font-body-base">Personalized suggestions based on your transit profile.</p>
-          </div>
-          <motion.div 
-            className="grid grid-cols-1 md:grid-cols-4 gap-8"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-50px" }}
-            variants={{
-              hidden: { opacity: 0 },
-              visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
-            }}
-          >
-            {[
-              { name: 'NEO-KYOTO SANCTUARY', tag: 'WELLNESS HUB • 3H FROM HUB', price: '$210', badge: 'LAST SEEN 2M AGO', img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAabr8akoV9ik-mM4e1kCaCjd2hYKTmaJu_VaccgPcc1CuQH00rJ3mCkt677IpOTqnpDk56L7hjGPP3ECu3A24xumPiD8-y9l1Dmg7cUSYw6834nu8yVZo8hr7aKBR2D_BRn32Z5MQhEzYe1zggEqcOWxOfvB0Rsq3WgQNuoDbaJwVSOW2UnLqXKIYrwTl7H54ggvMOLp08FCEKkETwbG8m86QIfKtaQBS21YLPZ60BXSyFGtChliDD6OVTJVpnHTXj_sWdEIhNoYg' },
-              { name: 'THE OBSIDIAN CORRIDOR', tag: 'ADVENTURE • 1.5H FROM HUB', price: '$85', badge: 'BEST VALUE', img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAzErUQl6axmtGY1PVvoyOAL1gSqUZx1iCuPRyk4vKsV5r40c3U1PKep92oi-6HhOMDWjHZBP9Dpa7xZ3EIe4wj8i9WU2SNZ1qT0vvDSDCDVmGK06H043K19spiXsGKH96dPrawxGWTIfkTDsISl9CrQAqp4tX0K6L6ZDftnGviRq3JPsBUGKrsLn9sS-S97RCCJ7Qc_vkXjZXcT-pkbgG7LJLdyZI3p6zFAiXfB4U5QKeebJosaH7rGZggPER4rqWbZrScIDfGyaw' },
-              { name: 'SKY GARDEN DISTRICT', tag: 'ECO-URBAN • 45M FROM HUB', price: '$42', badge: 'POPULAR CHOICE', img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBNLnR1QGAWlLTEaRVGWd8Atg3CYNJ6wnAlPzfq_1mwAD8NgplZLJNaK2XQOXBuvLLVvoyWrTLsIrwMdRd_xuRZEdnqbWuzn5OLj-GmbwKnvwCaNsvDC_ykZjMKPXi7uZJqLSov1RzoXinbpKNTv8-7QdtBlN7VgmOAGnvFixMOlyGfsR2xlpUe0oo7AIr5xoQpGTuArd68LDFywWh5kK301Trnzu6kyWbVCcn1oWzGKVF0M2WdlyMihG9_6ddaEt4yhAMOh9T-H98' },
-              { name: 'NEON NIGHT MARKET', tag: 'CULTURAL • 2.5H FROM HUB', price: '$115', badge: 'NEWLY ADDED', img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDaUCIKUYR_RvaWXo88AHIC_BAQ3yD9dD4XeQP11x5XDy0gIK-Hyr2TMONfMZyyiApTKtux1crvCbYGYAP8YAa9syYe3EF8v59Y3lS1b6ZgLfLRbGpiHZ7VwlfELrPTS0nEg4UUMgJ_W4v5gGHMD922ty9dJH5rlptpPV0Q9tWflhn1LuL3byHSMOKUJc3-lD9mF-1xcpNTBSEvyjhHIdDTNE-ZWPEAhwqiory3o8bgjmCj8ertg_0ymE4odRYpnps4aYcyNduB7rQ' },
-            ].map((item) => (
-              <motion.div 
-                key={item.name} 
-                className="glass-card p-4 rounded-3xl group cursor-pointer"
-                variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}
-                whileHover={{ y: -5 }}
-              >
-                <div className="aspect-square rounded-2xl overflow-hidden mb-6 relative">
-                  <img className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" src={item.img} alt={item.name} />
-                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                    <span className="material-symbols-outlined text-4xl text-white">explore</span>
-                  </div>
-                </div>
-                <h4 className="font-headline-md text-white text-lg mb-1">{item.name}</h4>
-                <p className="text-on-surface-variant font-data-mono text-xs mb-4">{item.tag}</p>
-                <div className="flex items-center justify-between">
-                  <span className="text-fuchsia-400 font-bold">{item.price}</span>
-                  <span className="text-[10px] text-slate-500 font-label-caps">{item.badge}</span>
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
-
       {/* Footer */}
-      <footer className="py-12 border-t border-white/5" style={{ backgroundColor: '#050505' }}>
+      <footer className="py-12 border-t border-white/5" style={{ backgroundColor: 'transparent' }}>
         <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8">
           <div className="flex items-center gap-12">
             <div className="flex flex-col">
@@ -269,7 +224,7 @@ function Home() {
             <a className="hover:text-white transition-colors" href="#">CARRIER TERMS</a>
             <a className="hover:text-white transition-colors" href="#">SYSTEM INTEL</a>
           </div>
-          <div className="font-['Space_Grotesk'] text-xl font-black text-fuchsia-600/50">VELOCITY</div>
+          <div className="font-['Space_Grotesk'] text-xl font-black text-fuchsia-600/50">RAIL BANDHU</div>
         </div>
       </footer>
     </div>

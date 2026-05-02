@@ -1,10 +1,12 @@
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import Navbar from '../components/Navbar'
+import { useAuth } from '../context/AuthContext'
 
 function Landing() {
+  const { isLoggedIn } = useAuth()
   return (
-    <div className="min-h-screen font-body-base overflow-x-hidden relative" style={{ backgroundColor: '#050505', color: '#e5e2e3' }}>
+    <div className="min-h-screen font-body-base overflow-x-hidden relative" style={{ backgroundColor: 'transparent', color: '#e5e2e3' }}>
       <Navbar />
 
       {/* Ambient glowing background */}
@@ -68,9 +70,15 @@ function Landing() {
             className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto"
           >
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="w-full sm:w-auto">
-              <Link to="/login" className="flex items-center justify-center gap-2 bg-[#bc13fe] text-white px-6 py-3 rounded-xl font-bold font-label-caps text-xs md:text-sm uppercase tracking-widest hover:shadow-[0_0_40px_rgba(188,19,254,0.4)] transition-all">
-                Sign In to Book <span className="material-symbols-outlined text-base">bolt</span>
-              </Link>
+              {isLoggedIn ? (
+                <Link to="/search" className="flex items-center justify-center gap-2 bg-[#bc13fe] text-white px-6 py-3 rounded-xl font-bold font-label-caps text-xs md:text-sm uppercase tracking-widest hover:shadow-[0_0_40px_rgba(188,19,254,0.4)] transition-all">
+                  Book Ticket <span className="material-symbols-outlined text-base">bolt</span>
+                </Link>
+              ) : (
+                <Link to="/login" className="flex items-center justify-center gap-2 bg-[#bc13fe] text-white px-6 py-3 rounded-xl font-bold font-label-caps text-xs md:text-sm uppercase tracking-widest hover:shadow-[0_0_40px_rgba(188,19,254,0.4)] transition-all">
+                  Sign In to Book <span className="material-symbols-outlined text-base">bolt</span>
+                </Link>
+              )}
             </motion.div>
             
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="w-full sm:w-auto">

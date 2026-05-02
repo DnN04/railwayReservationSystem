@@ -13,12 +13,14 @@ function Booking() {
   const prefill   = state || {}
   const isMulti   = !!prefill.connections
 
+  const guestsCount = prefill.guests || 1;
+
   const [form, setForm] = useState({
     train_code:   isMulti ? undefined : (prefill.train?.train_code || ''),
     class:        prefill.selectedClass || 'Economy',
     journey_date: isMulti ? undefined : (prefill.train?.journey_date || ''),
     connections:  isMulti ? prefill.connections.map(c => ({ train_code: c.train_code, class: prefill.selectedClass || 'Economy', journey_date: c.journey_date })) : undefined,
-    passenger: { name: '', age: '', gender: 'Male' },
+    passengers:   Array.from({ length: guestsCount }, () => ({ name: '', age: '', gender: 'Male' })),
     payment:   { mode: 'UPI' },
   })
   const [train,    setTrain]    = useState(prefill.train || null)
@@ -27,7 +29,11 @@ function Booking() {
   const [success,  setSuccess]  = useState(null)   // { pnr_no, seat_no, amount } or { legs, total_amount }
 
   const update  = (field, val) => setForm(f => ({ ...f, [field]: val }))
-  const updateP = (field, val) => setForm(f => ({ ...f, passenger: { ...f.passenger, [field]: val } }))
+  const updateP = (index, field, val) => setForm(f => {
+    const newP = [...f.passengers];
+    newP[index] = { ...newP[index], [field]: val };
+    return { ...f, passengers: newP };
+  })
 
   const updateClass = (cls) => {
     setForm(f => {
@@ -39,9 +45,22 @@ function Booking() {
     });
   }
 
-  const fare = isMulti 
+  const baseFare = isMulti 
     ? prefill.connections.reduce((sum, c) => sum + (c.fares?.[form.class] || 0), 0)
     : (train?.fares?.[form.class] || 0);
+
+  const totalFare = baseFare * form.passengers.length;
+
+  const getTrainImage = (code) => {
+    if (!code) return null;
+    if (code.startsWith('KR-101')) return '/images/desi_mumbai_delhi.png';
+    if (code.startsWith('KR-202')) return '/images/desi_delhi_shimla.png';
+    if (code.startsWith('KR-303')) return '/images/desi_chennai_goa.png';
+    if (code.startsWith('KR-505')) return '/images/desi_pune_mumbai.png';
+    return '/images/desi_mumbai_delhi.png'; // default fallback
+  };
+
+  const bgImage = isMulti ? getTrainImage(prefill.connections[0]?.train_code) : getTrainImage(form.train_code);
 
   const handleSubmit = async (e) => {
     e.preventDefault(); setError(''); setLoading(true)
@@ -56,7 +75,7 @@ function Booking() {
 
   // ── Confirmation screen ───────────────────────────────────────
   if (success) return (
-    <div className="min-h-screen bg-[#050505] text-white flex items-center justify-center px-6">
+    <div className="min-h-screen bg-transparent text-white flex items-center justify-center px-6">
       <Navbar />
       <motion.div 
         initial={{ opacity: 0, scale: 0.9, y: 20 }}
@@ -84,9 +103,9 @@ function Booking() {
           />
           {isMulti ? (
             <>
-              {success.legs.map((leg, i) => (
+              {success.legs?.map((leg, i) => (
                 <div key={i} className="mb-4 pb-4 border-b border-white/10 last:border-0 last:mb-0 last:pb-0">
-                  <div className="text-[#00f4fe] font-bold text-xs mb-1">LEG {i+1}</div>
+                  <div className="text-[#00f4fe] font-bold text-xs mb-1">{leg.train_code} - {leg.passenger}</div>
                   <div className="flex justify-between"><span className="text-slate-500">PNR No.</span><span className="text-[#ebb2ff] font-bold">#{leg.pnr_no}</span></div>
                   <div className="flex justify-between"><span className="text-slate-500">Train</span><span>{leg.train_code}</span></div>
                   <div className="flex justify-between"><span className="text-slate-500">Seat</span><span>{leg.seat_no}</span></div>
@@ -96,12 +115,17 @@ function Booking() {
             </>
           ) : (
             <>
-              <div className="flex justify-between"><span className="text-slate-500">PNR No.</span><span className="text-[#ebb2ff] font-bold">#{success.pnr_no}</span></div>
-              <div className="flex justify-between"><span className="text-slate-500">Seat</span><span>{success.seat_no}</span></div>
+              {success.tickets?.map((t, i) => (
+                <div key={i} className="mb-4 pb-4 border-b border-white/10 last:border-0 last:mb-0 last:pb-0">
+                  <div className="text-[#00f4fe] font-bold text-xs mb-1">PASSENGER: {t.passenger}</div>
+                  <div className="flex justify-between"><span className="text-slate-500">PNR No.</span><span className="text-[#ebb2ff] font-bold">#{t.pnr_no}</span></div>
+                  <div className="flex justify-between"><span className="text-slate-500">Seat</span><span>{t.seat_no}</span></div>
+                </div>
+              ))}
               <div className="flex justify-between"><span className="text-slate-500">Train</span><span>{success.train_code}</span></div>
               <div className="flex justify-between"><span className="text-slate-500">Class</span><span>{success.class}</span></div>
               <div className="flex justify-between"><span className="text-slate-500">Date</span><span>{success.journey_date}</span></div>
-              <div className="flex justify-between border-t border-white/10 pt-3 mt-2"><span className="text-slate-500">Amount Paid</span><span className="text-[#00e46b] font-bold">₹{success.amount}</span></div>
+              <div className="flex justify-between border-t border-white/10 pt-3 mt-2"><span className="text-slate-500">Amount Paid</span><span className="text-[#00e46b] font-bold">₹{success.total_amount}</span></div>
             </>
           )}
         </div>
@@ -119,7 +143,7 @@ function Booking() {
 
   // ── Booking form ──────────────────────────────────────────────
   return (
-    <div className="bg-[#050505] text-on-surface font-body-base min-h-screen pb-20">
+    <div className="bg-transparent text-on-surface font-body-base min-h-screen pb-20">
       <Navbar />
       <main className="max-w-7xl mx-auto pt-32 px-6">
         <h1 className="font-display-lg text-2xl text-white mb-8">Book Your Journey</h1>
@@ -215,30 +239,35 @@ function Booking() {
                 style={{ backdropFilter: 'blur(20px)', background: 'linear-gradient(180deg,rgba(255,255,255,0.05) 0%,rgba(0,0,0,0.2) 100%)' }}
               >
                 <div className="flex items-center gap-3 mb-6">
-                  <span className="material-symbols-outlined text-[#ebb2ff]">person</span>
+                  <span className="material-symbols-outlined text-[#ebb2ff]">group</span>
                   <h2 className="font-headline-md text-headline-md text-white uppercase">Passenger Details</h2>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                  <div className="flex flex-col gap-2">
-                    <label className="font-label-caps text-[#d4c0d7] text-xs">FULL NAME</label>
-                    <input value={form.passenger.name} onChange={e => updateP('name', e.target.value)} required
-                      className="bg-transparent border border-[#504254] rounded-lg px-4 py-3 text-white focus:border-[#ebb2ff] outline-none transition-all"
-                      placeholder="Passenger name" />
+                {form.passengers.map((p, idx) => (
+                  <div key={idx} className={`grid grid-cols-1 md:grid-cols-2 gap-5 ${idx > 0 ? 'mt-8 pt-8 border-t border-white/10' : ''}`}>
+                    {form.passengers.length > 1 && (
+                      <div className="md:col-span-2 font-label-caps text-[#ebb2ff] text-sm">PASSENGER {idx + 1}</div>
+                    )}
+                    <div className="flex flex-col gap-2">
+                      <label className="font-label-caps text-[#d4c0d7] text-xs">FULL NAME</label>
+                      <input value={p.name} onChange={e => updateP(idx, 'name', e.target.value)} required
+                        className="bg-transparent border border-[#504254] rounded-lg px-4 py-3 text-white focus:border-[#ebb2ff] outline-none transition-all"
+                        placeholder="Passenger name" />
+                    </div>
+                    <div className="flex flex-col gap-2">
+                      <label className="font-label-caps text-[#d4c0d7] text-xs">AGE</label>
+                      <input type="number" min="1" max="120" value={p.age} onChange={e => updateP(idx, 'age', e.target.value)} required
+                        className="bg-transparent border border-[#504254] rounded-lg px-4 py-3 text-white focus:border-[#ebb2ff] outline-none transition-all font-data-mono"
+                        placeholder="28" />
+                    </div>
+                    <div className="flex flex-col gap-2 md:col-span-2 lg:col-span-1">
+                      <label className="font-label-caps text-[#d4c0d7] text-xs">GENDER</label>
+                      <select value={p.gender} onChange={e => updateP(idx, 'gender', e.target.value)}
+                        className="bg-[#1c1b1c] border border-[#504254] rounded-lg px-4 py-3 text-white focus:border-[#ebb2ff] outline-none transition-all font-data-mono">
+                        {['Male','Female','Other'].map(g => <option key={g}>{g}</option>)}
+                      </select>
+                    </div>
                   </div>
-                  <div className="flex flex-col gap-2">
-                    <label className="font-label-caps text-[#d4c0d7] text-xs">AGE</label>
-                    <input type="number" min="1" max="120" value={form.passenger.age} onChange={e => updateP('age', e.target.value)} required
-                      className="bg-transparent border border-[#504254] rounded-lg px-4 py-3 text-white focus:border-[#ebb2ff] outline-none transition-all font-data-mono"
-                      placeholder="28" />
-                  </div>
-                  <div className="flex flex-col gap-2">
-                    <label className="font-label-caps text-[#d4c0d7] text-xs">GENDER</label>
-                    <select value={form.passenger.gender} onChange={e => updateP('gender', e.target.value)}
-                      className="bg-[#1c1b1c] border border-[#504254] rounded-lg px-4 py-3 text-white focus:border-[#ebb2ff] outline-none transition-all font-data-mono">
-                      {['Male','Female','Other'].map(g => <option key={g}>{g}</option>)}
-                    </select>
-                  </div>
-                </div>
+                ))}
               </motion.section>
 
               {/* Payment */}
@@ -271,18 +300,25 @@ function Booking() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.4 }}
             >
-              <aside className="rounded-2xl p-8 sticky top-32 border border-white/10 text-white shadow-[0_0_30px_rgba(188,19,254,0.05)]"
+              <aside className="rounded-2xl p-8 sticky top-32 border border-white/10 text-white shadow-[0_0_30px_rgba(188,19,254,0.05)] relative overflow-hidden isolate"
                 style={{ backdropFilter: 'blur(20px)', background: 'linear-gradient(180deg,rgba(255,255,255,0.05) 0%,rgba(0,0,0,0.2) 100%)' }}>
-                <h2 className="font-headline-md text-headline-md uppercase tracking-tight mb-6">Order Summary</h2>
+                {bgImage && (
+                  <>
+                    <img src={bgImage} alt="" className="absolute inset-0 w-full h-full object-cover opacity-20 -z-10 mix-blend-overlay" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/80 to-[#050505]/40 -z-10"></div>
+                  </>
+                )}
+                <div className="relative z-10">
+                  <h2 className="font-headline-md text-headline-md uppercase tracking-tight mb-6">Order Summary</h2>
                 <div className="space-y-3 font-data-mono mb-6 relative">
                   <div className="flex justify-between text-sm"><span className="text-[#d4c0d7]">Journey</span><span>{isMulti ? 'Multi-leg Connection' : form.train_code || '—'}</span></div>
                   <div className="flex justify-between text-sm"><span className="text-[#d4c0d7]">Class</span><span>{form.class}</span></div>
                   {!isMulti && <div className="flex justify-between text-sm"><span className="text-[#d4c0d7]">Date</span><span>{form.journey_date || '—'}</span></div>}
-                  <div className="flex justify-between text-sm"><span className="text-[#d4c0d7]">Passenger</span><span>{form.passenger.name || '—'}</span></div>
+                  <div className="flex justify-between text-sm"><span className="text-[#d4c0d7]">Passengers</span><span>{form.passengers.length} {form.passengers.length > 1 ? 'Guests' : 'Guest'}</span></div>
                   <div className="flex justify-between text-sm"><span className="text-[#d4c0d7]">Payment</span><span>{form.payment.mode}</span></div>
                   <div className="flex justify-between items-end border-t border-white/10 pt-4 mt-4 relative z-10">
                     <span className="font-label-caps text-[#d4c0d7] text-xs">TOTAL</span>
-                    <span className="text-2xl font-black text-[#ebb2ff]">{fare ? `₹${fare}` : '—'}</span>
+                    <span className="text-2xl font-black text-[#ebb2ff]">{totalFare ? `₹${totalFare}` : '—'}</span>
                   </div>
                 </div>
                 <motion.button type="submit" disabled={loading}
@@ -296,8 +332,9 @@ function Booking() {
                   )}
                 </motion.button>
                 <p className="text-center text-[10px] font-label-caps text-[#d4c0d7]/40 mt-4">
-                  BY CONFIRMING YOU AGREE TO VELOCITY RAIL TERMS OF SERVICE.
+                  BY CONFIRMING YOU AGREE TO RAIL BANDHU TERMS OF SERVICE.
                 </p>
+                </div>
               </aside>
             </motion.div>
           </div>

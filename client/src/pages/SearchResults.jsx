@@ -36,10 +36,10 @@ function SearchResults() {
     fetchTrains(source, destination, date)
   }
 
-  const handleBook = (train, cls) => navigate('/booking', { state: { train, selectedClass: cls } })
+  const handleBook = (train, cls) => navigate('/booking', { state: { train, selectedClass: cls, guests: parseInt(qp.get('guests')) || 1 } })
 
   return (
-    <div className="font-body-base text-on-surface min-h-screen bg-[#050505]">
+    <div className="font-body-base text-on-surface min-h-screen bg-transparent">
       <Navbar />
       <main className="pt-32 pb-12 px-8 max-w-7xl mx-auto">
 
@@ -288,7 +288,7 @@ function SearchResults() {
                           return total > 0 ? (
                             <motion.button 
                               key={cls} 
-                              onClick={() => navigate('/booking', { state: { connections: [conn.train1, conn.train2], selectedClass: cls } })}
+                              onClick={() => navigate('/booking', { state: { connections: [conn.train1, conn.train2], selectedClass: cls, guests: parseInt(qp.get('guests')) || 1 } })}
                               whileHover={{ scale: 1.05 }}
                               whileTap={{ scale: 0.95 }}
                               className="flex flex-col items-center p-3 rounded-xl border border-[#00f4fe]/30 hover:border-[#00f4fe] hover:bg-[#00f4fe]/10 transition-all"
@@ -304,7 +304,7 @@ function SearchResults() {
                         })}
                       </div>
                       <motion.button 
-                        onClick={() => navigate('/booking', { state: { connections: [conn.train1, conn.train2], selectedClass: 'Economy' } })}
+                        onClick={() => navigate('/booking', { state: { connections: [conn.train1, conn.train2], selectedClass: 'Economy', guests: parseInt(qp.get('guests')) || 1 } })}
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                         className="w-full bg-[#00f4fe] text-black py-3 rounded-2xl font-bold hover:shadow-[0_0_20px_rgba(0,244,254,0.5)] transition-all font-label-caps"

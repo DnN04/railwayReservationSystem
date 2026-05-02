@@ -26,7 +26,7 @@ function MyTickets() {
   }, [])
 
   return (
-    <div className="bg-[#050505] text-on-surface font-body-base min-h-screen pb-20">
+    <div className="bg-transparent text-on-surface font-body-base min-h-screen pb-20">
       <Navbar />
       <main className="pt-32 pb-20 px-6 max-w-7xl mx-auto">
 

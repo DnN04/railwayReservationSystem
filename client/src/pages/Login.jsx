@@ -30,13 +30,13 @@ function Login() {
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row font-body-base text-on-surface" style={{
-      backgroundColor: '#050505',
+      backgroundColor: 'transparent',
       backgroundImage: 'radial-gradient(at 0% 0%, rgba(188,19,254,0.15) 0px,transparent 50%),radial-gradient(at 100% 100%, rgba(0,245,255,0.1) 0px,transparent 50%)'
     }}>
       <Navbar />
 
       {/* Left visual */}
-      <section className="hidden md:flex md:w-1/2 lg:w-3/5 relative overflow-hidden items-center justify-center p-12 mt-20">
+      <section className="hidden md:flex md:w-1/2 lg:w-3/5 relative overflow-hidden items-center justify-center p-12">
         <div className="absolute inset-0 z-0">
           <img className="w-full h-full object-cover opacity-80"
             src="https://lh3.googleusercontent.com/aida-public/AB6AXuCwaSEN9WgiN46AzjeMOy-twmPWvBLeHlb_PFs9PoXwMNTbh1KcKvn17do5xm7UtdZF4Cvcu3VMkYHDbhKA0f7hj09wi2Lotugd8ZlrVB9-9GgJ7wIZst5QCmDQDmHlLmLfUAIuxoI3UfDYAGmXqrpHolFyq2hTrqmcXn2zx8uiYE82nyb80J3vni6NKIIKaabSVkxawHZnjTx_BIeJcNH2vKR2qYKR7gjKMHw2XwG2xUAfK_HwV1qnBKNizCka96Sk_9QX8eT2Bb8"
@@ -45,7 +45,7 @@ function Login() {
         </div>
         <div className="relative z-10 max-w-xl">
           <h1 className="font-display-lg text-display-lg text-white mb-6 uppercase tracking-tighter">
-            Velocity <br /><span className="text-[#bc13fe]">Redefined.</span>
+            Rail Bandhu <br /><span className="text-[#bc13fe]">Redefined.</span>
           </h1>
           <p className="text-on-surface-variant font-body-base mb-8 max-w-md">
             Experience the nexus of heavy infrastructure and premium software agility. Command your journey with surgical precision.
@@ -85,7 +85,7 @@ function Login() {
                   <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[#504254]">alternate_email</span>
                   <input name="email" type="email" value={form.email} onChange={handleChange} required
                     className="w-full bg-[#0e0e0f] border border-white/10 rounded-xl py-4 pl-12 pr-4 text-white focus:outline-none focus:border-[#bc13fe] focus:ring-1 focus:ring-[#bc13fe] transition-all placeholder:text-[#504254]"
-                    placeholder="nexus.agent@velocity.rail" />
+                    placeholder="nexus.agent@railbandhu.in" />
                 </div>
               </div>
 

@@ -33,7 +33,7 @@ function Signup() {
 
   return (
     <div className="min-h-screen flex items-center justify-center font-body-base text-on-surface relative overflow-hidden" style={{
-      backgroundColor: '#050505',
+      backgroundColor: 'transparent',
       backgroundImage: 'radial-gradient(at 0% 0%, rgba(188,19,254,0.15) 0px,transparent 50%),radial-gradient(at 100% 100%, rgba(0,245,255,0.1) 0px,transparent 50%)'
     }}>
       <Navbar />
@@ -41,9 +41,9 @@ function Signup() {
       <div className="w-full max-w-md px-6 mt-20">
         <div className="border border-white/10 rounded-2xl p-10 flex flex-col gap-6" style={{ backdropFilter: 'blur(20px)', background: 'linear-gradient(180deg,rgba(255,255,255,0.05) 0%,rgba(0,0,0,0.2) 100%)' }}>
 
-          <div className="text-center">
-            <h1 className="font-headline-md text-headline-md text-white mb-1">Create Account</h1>
-            <p className="font-label-caps text-label-caps text-on-surface-variant">Join the Velocity Rail network</p>
+          <div className="mb-10">
+            <h2 className="font-display-lg text-4xl text-white mb-2">Create Pass</h2>
+            <p className="font-label-caps text-label-caps text-on-surface-variant">Join the Rail Bandhu network</p>
           </div>
 
           {error && (

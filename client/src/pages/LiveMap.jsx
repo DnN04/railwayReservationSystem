@@ -185,7 +185,7 @@ function LiveMap() {
   }, []);
 
   return (
-    <div className="min-h-screen font-body-base bg-[#050505] text-[#e5e2e3]">
+    <div className="min-h-screen font-body-base bg-transparent text-[#e5e2e3]">
       <Navbar />
 
       <main className="pt-28 pb-12 px-6 max-w-7xl mx-auto flex flex-col h-[100dvh] overflow-hidden">
@@ -197,7 +197,7 @@ function LiveMap() {
           <div>
             <h1 className="font-display-lg text-4xl text-white uppercase tracking-tighter mb-2">Live Tracking</h1>
             <p className="text-slate-400">
-              {train?.train_name || 'Velocity Express'}: {sourceName} to {destName}
+              {train?.train_name || 'Rail Bandhu Express'}: {sourceName} to {destName}
             </p>
           </div>
           <div className="text-right">
@@ -271,7 +271,7 @@ function LiveMap() {
             {/* Moving Train */}
             <Marker position={trainPosition} icon={trainIcon}>
               <Popup>
-                <span className="font-data-mono text-[#00f4fe]">{train?.train_name || 'Velocity Exp'} (Active)</span>
+                <span className="font-data-mono text-[#00f4fe]">{train?.train_name || 'Rail Bandhu Exp'} (Active)</span>
               </Popup>
             </Marker>
           </MapContainer>

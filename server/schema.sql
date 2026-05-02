@@ -160,11 +160,11 @@ INSERT IGNORE INTO USERS (name, email, password, role) VALUES
 
 -- Sample trains
 INSERT IGNORE INTO TRAIN (train_code, train_name, source, destination, departure_time, arrival_time, total_seats) VALUES
-  ('KR-101', 'NEO TOKYO EXPRESS',   'Mumbai',    'Delhi',     '06:00:00', '14:00:00', 200),
-  ('KR-202', 'ALPINE DOME',         'Delhi',     'Shimla',    '08:00:00', '14:00:00', 150),
-  ('KR-303', 'AZURE COAST',         'Chennai',   'Goa',       '07:30:00', '15:30:00', 180),
-  ('KR-411', 'KR-411 HYPERLOOP',    'Bangalore', 'Hyderabad', '09:00:00', '13:00:00', 200),
-  ('KR-505', 'SILICON SHUTTLE',     'Pune',      'Mumbai',    '07:00:00', '09:00:00', 120);
+  ('KR-101', 'VANDE BHARAT EXPRESS',   'Mumbai', 'Delhi',     '08:00:00', '14:00:00', 500),
+  ('KR-202', 'HIMALAYAN QUEEN',         'Delhi',  'Shimla',    '15:00:00', '21:00:00', 300),
+  ('KR-303', 'KONKAN KANYA',         'Chennai','Goa',       '09:00:00', '17:00:00', 400),
+  ('KR-411', 'SHATABDI EXPRESS',    'Bangalore','Hyderabad','06:00:00','09:00:00', 200),
+  ('KR-505', 'DECCAN QUEEN',     'Pune',   'Mumbai',    '07:00:00', '09:00:00', 600);
 
 -- Sample fares
 INSERT IGNORE INTO TRAIN_FARE (train_code, class, fare) VALUES
