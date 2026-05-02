@@ -9,30 +9,45 @@ const PAY_MODES = ['Credit Card', 'Debit Card', 'UPI', 'Net Banking', 'Neo-Token
 
 function Booking() {
   const navigate  = useNavigate()
-  const { state } = useLocation()          // { train, selectedClass } from SearchResults
+  const { state } = useLocation()          // { train, connections, selectedClass } from SearchResults
   const prefill   = state || {}
+  const isMulti   = !!prefill.connections
 
   const [form, setForm] = useState({
-    train_code:   prefill.train?.train_code || '',
-    class:        prefill.selectedClass     || 'Economy',
-    journey_date: '',
+    train_code:   isMulti ? undefined : (prefill.train?.train_code || ''),
+    class:        prefill.selectedClass || 'Economy',
+    journey_date: isMulti ? undefined : (prefill.train?.journey_date || ''),
+    connections:  isMulti ? prefill.connections.map(c => ({ train_code: c.train_code, class: prefill.selectedClass || 'Economy', journey_date: c.journey_date })) : undefined,
     passenger: { name: '', age: '', gender: 'Male' },
     payment:   { mode: 'UPI' },
   })
   const [train,    setTrain]    = useState(prefill.train || null)
   const [loading,  setLoading]  = useState(false)
   const [error,    setError]    = useState('')
-  const [success,  setSuccess]  = useState(null)   // { pnr_no, seat_no, amount }
+  const [success,  setSuccess]  = useState(null)   // { pnr_no, seat_no, amount } or { legs, total_amount }
 
   const update  = (field, val) => setForm(f => ({ ...f, [field]: val }))
   const updateP = (field, val) => setForm(f => ({ ...f, passenger: { ...f.passenger, [field]: val } }))
 
-  const fare = train?.fares?.[form.class]
+  const updateClass = (cls) => {
+    setForm(f => {
+      const newForm = { ...f, class: cls };
+      if (isMulti) {
+        newForm.connections = newForm.connections.map(c => ({ ...c, class: cls }));
+      }
+      return newForm;
+    });
+  }
+
+  const fare = isMulti 
+    ? prefill.connections.reduce((sum, c) => sum + (c.fares?.[form.class] || 0), 0)
+    : (train?.fares?.[form.class] || 0);
 
   const handleSubmit = async (e) => {
     e.preventDefault(); setError(''); setLoading(true)
     try {
-      const { data } = await api.post('/book-ticket', form)
+      const endpoint = isMulti ? '/book-multi' : '/book-ticket';
+      const { data } = await api.post(endpoint, form)
       setSuccess(data)
     } catch (err) {
       setError(err.response?.data?.message || 'Booking failed. Try again.')
@@ -67,12 +82,28 @@ function Booking() {
             animate={{ top: ['0%', '100%', '0%'] }}
             transition={{ repeat: Infinity, duration: 3, ease: "linear" }}
           />
-          <div className="flex justify-between"><span className="text-slate-500">PNR No.</span><span className="text-[#ebb2ff] font-bold">#{success.pnr_no}</span></div>
-          <div className="flex justify-between"><span className="text-slate-500">Seat</span><span>{success.seat_no}</span></div>
-          <div className="flex justify-between"><span className="text-slate-500">Train</span><span>{success.train_code}</span></div>
-          <div className="flex justify-between"><span className="text-slate-500">Class</span><span>{success.class}</span></div>
-          <div className="flex justify-between"><span className="text-slate-500">Date</span><span>{success.journey_date}</span></div>
-          <div className="flex justify-between border-t border-white/10 pt-3"><span className="text-slate-500">Amount Paid</span><span className="text-[#00e46b] font-bold">₹{success.amount}</span></div>
+          {isMulti ? (
+            <>
+              {success.legs.map((leg, i) => (
+                <div key={i} className="mb-4 pb-4 border-b border-white/10 last:border-0 last:mb-0 last:pb-0">
+                  <div className="text-[#00f4fe] font-bold text-xs mb-1">LEG {i+1}</div>
+                  <div className="flex justify-between"><span className="text-slate-500">PNR No.</span><span className="text-[#ebb2ff] font-bold">#{leg.pnr_no}</span></div>
+                  <div className="flex justify-between"><span className="text-slate-500">Train</span><span>{leg.train_code}</span></div>
+                  <div className="flex justify-between"><span className="text-slate-500">Seat</span><span>{leg.seat_no}</span></div>
+                </div>
+              ))}
+              <div className="flex justify-between border-t border-white/10 pt-3 mt-2"><span className="text-slate-500">Total Paid</span><span className="text-[#00e46b] font-bold">₹{success.total_amount}</span></div>
+            </>
+          ) : (
+            <>
+              <div className="flex justify-between"><span className="text-slate-500">PNR No.</span><span className="text-[#ebb2ff] font-bold">#{success.pnr_no}</span></div>
+              <div className="flex justify-between"><span className="text-slate-500">Seat</span><span>{success.seat_no}</span></div>
+              <div className="flex justify-between"><span className="text-slate-500">Train</span><span>{success.train_code}</span></div>
+              <div className="flex justify-between"><span className="text-slate-500">Class</span><span>{success.class}</span></div>
+              <div className="flex justify-between"><span className="text-slate-500">Date</span><span>{success.journey_date}</span></div>
+              <div className="flex justify-between border-t border-white/10 pt-3 mt-2"><span className="text-slate-500">Amount Paid</span><span className="text-[#00e46b] font-bold">₹{success.amount}</span></div>
+            </>
+          )}
         </div>
         <motion.button 
           whileHover={{ scale: 1.05 }}
@@ -118,29 +149,60 @@ function Booking() {
                   <h2 className="font-headline-md text-headline-md text-white uppercase">Journey Details</h2>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                  <div className="flex flex-col gap-2">
-                    <label className="font-label-caps text-[#d4c0d7] text-xs">TRAIN CODE</label>
-                    <input value={form.train_code} onChange={e => update('train_code', e.target.value)} required
-                      className="bg-transparent border border-[#504254] rounded-lg px-4 py-3 text-white focus:border-[#ebb2ff] outline-none transition-all font-data-mono"
-                      placeholder="e.g. KR-101" />
-                  </div>
-                  <div className="flex flex-col gap-2">
-                    <label className="font-label-caps text-[#d4c0d7] text-xs">JOURNEY DATE</label>
-                    <input type="date" value={form.journey_date} onChange={e => update('journey_date', e.target.value)} required
-                      className="bg-transparent border border-[#504254] rounded-lg px-4 py-3 text-white focus:border-[#ebb2ff] outline-none transition-all font-data-mono" />
-                  </div>
-                  <div className="flex flex-col gap-2 md:col-span-2">
+                  {isMulti ? (
+                    <div className="md:col-span-2 space-y-3">
+                      {prefill.connections.map((c, i) => (
+                        <div key={c.train_code} className="bg-white/5 p-4 rounded-xl border border-[#00f4fe]/20">
+                          <div className="font-label-caps text-[#00f4fe] text-[10px] mb-2">LEG {i+1}</div>
+                          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                            <div>
+                              <span className="font-bold text-white block text-lg">{c.train_code} - {c.train_name}</span>
+                              <span className="font-data-mono text-xs text-slate-400">{c.source} → {c.destination}</span>
+                            </div>
+                            <div className="text-left sm:text-right">
+                              <span className="font-data-mono text-[#00e46b] block">{c.journey_date}</span>
+                              <span className="font-data-mono text-xs text-slate-400">{c.departure_time?.slice(0,5)} - {c.arrival_time?.slice(0,5)}</span>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <>
+                      <div className="flex flex-col gap-2">
+                        <label className="font-label-caps text-[#d4c0d7] text-xs">TRAIN CODE</label>
+                        <input value={form.train_code} onChange={e => update('train_code', e.target.value)} required
+                          className="bg-transparent border border-[#504254] rounded-lg px-4 py-3 text-white focus:border-[#ebb2ff] outline-none transition-all font-data-mono"
+                          placeholder="e.g. KR-101" />
+                      </div>
+                      <div className="flex flex-col gap-2">
+                        <label className="font-label-caps text-[#d4c0d7] text-xs">JOURNEY DATE</label>
+                        <input type="date" value={form.journey_date} onChange={e => update('journey_date', e.target.value)} required
+                          className="bg-transparent border border-[#504254] rounded-lg px-4 py-3 text-white focus:border-[#ebb2ff] outline-none transition-all font-data-mono [color-scheme:dark]" />
+                      </div>
+                    </>
+                  )}
+                  <div className="flex flex-col gap-2 md:col-span-2 mt-2">
                     <label className="font-label-caps text-[#d4c0d7] text-xs">CLASS</label>
                     <div className="grid grid-cols-3 gap-3">
-                      {CLASSES.map(cls => (
-                        <motion.button key={cls} type="button" onClick={() => update('class', cls)}
-                          whileHover={{ scale: 1.02 }}
-                          whileTap={{ scale: 0.98 }}
-                          className={`py-3 rounded-xl font-label-caps text-sm border transition-all ${form.class === cls ? 'bg-[#bc13fe]/20 border-[#bc13fe] text-[#ebb2ff]' : 'border-[#504254] text-[#d4c0d7] hover:border-[#ebb2ff]'}`}>
-                          {cls}
-                          {train?.fares?.[cls] && <span className="block text-xs font-data-mono mt-0.5">₹{train.fares[cls]}</span>}
-                        </motion.button>
-                      ))}
+                      {CLASSES.map(cls => {
+                        let classFare = null;
+                        if (isMulti) {
+                          classFare = prefill.connections.reduce((sum, c) => sum + (c.fares?.[cls] || 0), 0);
+                        } else {
+                          classFare = train?.fares?.[cls];
+                        }
+                        
+                        return (
+                          <motion.button key={cls} type="button" onClick={() => updateClass(cls)}
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                            className={`py-3 rounded-xl font-label-caps text-sm border transition-all ${form.class === cls ? 'bg-[#bc13fe]/20 border-[#bc13fe] text-[#ebb2ff]' : 'border-[#504254] text-[#d4c0d7] hover:border-[#ebb2ff]'}`}>
+                            {cls}
+                            {classFare > 0 && <span className="block text-xs font-data-mono mt-0.5">₹{classFare}</span>}
+                          </motion.button>
+                        );
+                      })}
                     </div>
                   </div>
                 </div>
@@ -213,9 +275,9 @@ function Booking() {
                 style={{ backdropFilter: 'blur(20px)', background: 'linear-gradient(180deg,rgba(255,255,255,0.05) 0%,rgba(0,0,0,0.2) 100%)' }}>
                 <h2 className="font-headline-md text-headline-md uppercase tracking-tight mb-6">Order Summary</h2>
                 <div className="space-y-3 font-data-mono mb-6 relative">
-                  <div className="flex justify-between text-sm"><span className="text-[#d4c0d7]">Train</span><span>{form.train_code || '—'}</span></div>
+                  <div className="flex justify-between text-sm"><span className="text-[#d4c0d7]">Journey</span><span>{isMulti ? 'Multi-leg Connection' : form.train_code || '—'}</span></div>
                   <div className="flex justify-between text-sm"><span className="text-[#d4c0d7]">Class</span><span>{form.class}</span></div>
-                  <div className="flex justify-between text-sm"><span className="text-[#d4c0d7]">Date</span><span>{form.journey_date || '—'}</span></div>
+                  {!isMulti && <div className="flex justify-between text-sm"><span className="text-[#d4c0d7]">Date</span><span>{form.journey_date || '—'}</span></div>}
                   <div className="flex justify-between text-sm"><span className="text-[#d4c0d7]">Passenger</span><span>{form.passenger.name || '—'}</span></div>
                   <div className="flex justify-between text-sm"><span className="text-[#d4c0d7]">Payment</span><span>{form.payment.mode}</span></div>
                   <div className="flex justify-between items-end border-t border-white/10 pt-4 mt-4 relative z-10">

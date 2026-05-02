@@ -1,4 +1,36 @@
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
+import api from '../services/api'
+
 function AdminLogin() {
+  const navigate = useNavigate()
+  const { login } = useAuth()
+  const [form, setForm] = useState({ email: '', password: '' })
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
+
+  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value })
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    setError('')
+    setLoading(true)
+    try {
+      const { data } = await api.post('/auth/login', form)
+      login(data.user, data.token)
+      if (data.user.role === 'admin') {
+        navigate('/admin')
+      } else {
+        setError('Access Denied. Admin privileges required.')
+      }
+    } catch (err) {
+      setError(err.response?.data?.message || 'Login failed. Invalid credentials.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return (
     <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-[#050505] font-body-base text-on-surface">
       {/* Background Layer */}
@@ -34,15 +66,24 @@ function AdminLogin() {
           </div>
 
           {/* Input Fields */}
-          <form className="w-full space-y-6">
+          {error && (
+            <div className="mb-4 bg-red-900/30 border border-red-500/40 text-red-400 px-4 py-3 rounded-xl text-center text-xs tracking-widest font-label-caps uppercase">
+              {error}
+            </div>
+          )}
+          <form onSubmit={handleSubmit} className="w-full space-y-6">
             <div className="relative">
               <label className="font-label-caps text-label-caps text-[#d4c0d7] block mb-2 px-1">ADMIN ID</label>
               <div className="relative group">
                 <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[#9d8ba0] group-focus-within:text-[#ebb2ff] transition-colors">badge</span>
                 <input
+                  name="email"
+                  value={form.email}
+                  onChange={handleChange}
+                  required
                   className="w-full bg-white/5 border border-white/10 rounded-xl py-4 pl-12 pr-4 text-[#e5e2e3] font-data-mono text-data-mono focus:ring-2 focus:ring-[#ebb2ff]/50 focus:border-[#ebb2ff] outline-none transition-all placeholder:text-white/10"
-                  placeholder="ENTER SECURE ID"
-                  type="text"
+                  placeholder="admin@velocityrail.com"
+                  type="email"
                 />
               </div>
             </div>
@@ -52,6 +93,10 @@ function AdminLogin() {
               <div className="relative group">
                 <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[#9d8ba0] group-focus-within:text-[#ebb2ff] transition-colors">key_visualizer</span>
                 <input
+                  name="password"
+                  value={form.password}
+                  onChange={handleChange}
+                  required
                   className="w-full bg-white/5 border border-white/10 rounded-xl py-4 pl-12 pr-4 text-[#e5e2e3] font-data-mono text-data-mono focus:ring-2 focus:ring-[#ebb2ff]/50 focus:border-[#ebb2ff] outline-none transition-all placeholder:text-white/10"
                   placeholder="••••••••••••"
                   type="password"
@@ -61,10 +106,15 @@ function AdminLogin() {
 
             {/* Primary Action */}
             <button
-              className="w-full bg-[#bc13fe] text-white font-headline-md text-body-base py-4 rounded-xl shadow-[0_0_20px_rgba(188,19,254,0.4)] hover:shadow-[0_0_35px_rgba(188,19,254,0.6)] active:scale-95 transition-all duration-300 uppercase tracking-widest mt-4"
+              disabled={loading}
+              className="w-full bg-[#bc13fe] text-white font-headline-md text-body-base py-4 rounded-xl shadow-[0_0_20px_rgba(188,19,254,0.4)] hover:shadow-[0_0_35px_rgba(188,19,254,0.6)] active:scale-95 transition-all duration-300 uppercase tracking-widest mt-4 flex justify-center items-center gap-2 disabled:opacity-60"
               type="submit"
             >
-              Initialize Uplink
+              {loading ? (
+                <><div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div> Authorizing...</>
+              ) : (
+                'Initialize Uplink'
+              )}
             </button>
           </form>
 

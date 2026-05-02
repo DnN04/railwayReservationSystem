@@ -12,17 +12,25 @@ function Navbar() {
     navigate('/login')
   }
 
-  const navLinks = isAdmin
-    ? [
-        { label: 'Dashboard',    to: '/admin' },
-        { label: 'All Bookings', to: '/admin' },
-      ]
-    : [
-        { label: 'Home',       to: '/' },
-        { label: 'Schedules',  to: '/search' },
-        { label: 'Bookings',   to: '/booking' },
-        { label: 'My Tickets', to: '/tickets' },
-      ]
+  let navLinks = []
+  if (isAdmin) {
+    navLinks = [
+      { label: 'Dashboard',    to: '/admin' },
+      { label: 'All Bookings', to: '/admin' },
+    ]
+  } else if (user) {
+    navLinks = [
+      { label: 'Dashboard',  to: '/dashboard' },
+      { label: 'Search',     to: '/search' },
+      { label: 'My Tickets', to: '/tickets' },
+    ]
+  } else {
+    navLinks = [
+      { label: 'Home',       to: '/' },
+      { label: 'Dashboard',  to: '/dashboard' },
+      { label: 'Search',     to: '/search' },
+    ]
+  }
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-8 py-3 bg-black/70 backdrop-blur-md font-['Space_Grotesk'] tracking-tight rounded-2xl mt-6 mx-auto w-[92%] max-w-7xl border border-white/10 shadow-[0_8px_32px_0_rgba(0,0,0,0.8)]">

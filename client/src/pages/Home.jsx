@@ -1,41 +1,44 @@
-import { Link } from 'react-router-dom'
+import { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import Navbar from '../components/Navbar'
 
 function Home() {
+  const navigate = useNavigate()
+  const [source, setSource] = useState('')
+  const [destination, setDestination] = useState('')
+  const [date, setDate] = useState('')
+
+  const handleSearch = (e) => {
+    e.preventDefault()
+    navigate(`/search?source=${source}&destination=${destination}&date=${date}`)
+  }
+
   return (
     <div className="font-body-base overflow-x-hidden" style={{ backgroundColor: '#050505', color: '#e5e2e3' }}>
       <Navbar />
 
-      {/* Hero Section */}
-      <section className="relative min-h-screen flex flex-col items-center justify-center pt-32 pb-20 px-6 overflow-hidden">
+      {/* Header Section */}
+      <section className="relative pt-32 pb-12 px-6 overflow-hidden">
         {/* Ambient background lighting */}
         <div className="absolute top-0 left-0 w-full h-full -z-10 overflow-hidden">
-          <div className="absolute top-[-10%] right-[-10%] w-[600px] h-[600px] bg-[#bc13fe]/20 rounded-full blur-[120px]"></div>
-          <div className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-[#00f4fe]/10 rounded-full blur-[100px]"></div>
-          <img
-            className="absolute top-0 left-0 w-full h-full object-cover opacity-30 mix-blend-overlay"
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuAwwDiVQ0jJudllwXJWHZY3xSA7SLwwJ1RIMKzEd-xJNMgzl3KX1rVX5EuzRcudqWshWGVQCuayXFEIL8jYYvgBF0qhUVp3OcD4_LyibHbaqV616BEXfDLxu6b5GcXhxHz1G8DoECJFhXtdrQd0fgx2oRDBwy98nxRQvD-5ek9jUC33G1t94eZsRJz-aDfQ5qYZd_SSZ1jKT411gsrs1Uo412PlAzM6JyqtmPPeQ0RQ2_HfuOYpgpmxJvugNL_MY1jBMsju192fYzo"
-            alt="Futuristic bullet train in neon-lit city"
-          />
+          <div className="absolute top-[-10%] right-[20%] w-[400px] h-[400px] bg-[#bc13fe]/10 rounded-full blur-[100px]"></div>
+          <div className="absolute bottom-[20%] left-[10%] w-[300px] h-[300px] bg-[#00f4fe]/10 rounded-full blur-[80px]"></div>
         </div>
 
         <motion.div 
-          className="text-center mb-12"
+          className="text-center mb-8"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
         >
           <motion.h1 
-            className="font-display-lg text-display-lg text-white mb-4 tracking-tighter uppercase leading-[0.9]"
+            className="font-display-lg text-5xl md:text-6xl text-white mb-2 tracking-tighter uppercase leading-[0.9]"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
           >
-            RAIL THE{' '}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#bc13fe] to-[#00f4fe]">
-              FUTURE.
-            </span>
+            GLOBAL <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#bc13fe] to-[#00f4fe]">NETWORK</span>
           </motion.h1>
           <motion.p 
             className="font-headline-md text-on-surface-variant max-w-2xl mx-auto opacity-80"
@@ -43,37 +46,37 @@ function Home() {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.4 }}
           >
-            Next-generation transit logic for the modern pioneer. Speed. Luxury. Total control.
+            Search routes, check live availability, and explore transit hubs.
           </motion.p>
         </motion.div>
 
         {/* Search Widget */}
         <motion.div 
-          className="glass-card w-full max-w-5xl p-2 rounded-3xl overflow-hidden shadow-2xl"
+          className="glass-card w-full max-w-5xl mx-auto p-2 rounded-3xl overflow-hidden shadow-2xl relative z-10"
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.6, type: "spring", stiffness: 50 }}
         >
-          <div className="bg-[#131314]/40 backdrop-blur-3xl rounded-[22px] p-8 md:p-10 flex flex-col md:flex-row items-end gap-6">
+          <form onSubmit={handleSearch} className="bg-[#131314]/40 backdrop-blur-3xl rounded-[22px] p-8 md:p-10 flex flex-col md:flex-row items-end gap-6">
             <div className="w-full md:flex-1 space-y-2">
               <label className="font-label-caps text-label-caps text-fuchsia-400 block px-1">From</label>
               <div className="relative">
                 <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">location_on</span>
-                <input className="w-full bg-white/5 border border-white/10 rounded-xl py-4 pl-12 pr-4 text-white focus:outline-none focus:border-fuchsia-500/50 focus:ring-1 focus:ring-fuchsia-500/50 transition-all" placeholder="Departure City" type="text" />
+                <input required value={source} onChange={(e) => setSource(e.target.value)} className="w-full bg-white/5 border border-white/10 rounded-xl py-4 pl-12 pr-4 text-white focus:outline-none focus:border-fuchsia-500/50 focus:ring-1 focus:ring-fuchsia-500/50 transition-all" placeholder="Departure City" type="text" />
               </div>
             </div>
             <div className="w-full md:flex-1 space-y-2">
               <label className="font-label-caps text-label-caps text-fuchsia-400 block px-1">To</label>
               <div className="relative">
                 <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">near_me</span>
-                <input className="w-full bg-white/5 border border-white/10 rounded-xl py-4 pl-12 pr-4 text-white focus:outline-none focus:border-fuchsia-500/50 focus:ring-1 focus:ring-fuchsia-500/50 transition-all" placeholder="Destination" type="text" />
+                <input required value={destination} onChange={(e) => setDestination(e.target.value)} className="w-full bg-white/5 border border-white/10 rounded-xl py-4 pl-12 pr-4 text-white focus:outline-none focus:border-fuchsia-500/50 focus:ring-1 focus:ring-fuchsia-500/50 transition-all" placeholder="Destination" type="text" />
               </div>
             </div>
             <div className="w-full md:w-48 space-y-2">
               <label className="font-label-caps text-label-caps text-fuchsia-400 block px-1">Date</label>
               <div className="relative">
                 <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">calendar_month</span>
-                <input className="w-full bg-white/5 border border-white/10 rounded-xl py-4 pl-12 pr-4 text-white focus:outline-none focus:border-fuchsia-500/50 focus:ring-1 focus:ring-fuchsia-500/50 transition-all" placeholder="Select Date" type="text" />
+                <input required value={date} onChange={(e) => setDate(e.target.value)} className="w-full bg-white/5 border border-white/10 rounded-xl py-4 pl-12 pr-4 text-white focus:outline-none focus:border-fuchsia-500/50 focus:ring-1 focus:ring-fuchsia-500/50 transition-all [color-scheme:dark]" placeholder="Select Date" type="date" />
               </div>
             </div>
             <div className="w-full md:w-32 space-y-2">
@@ -84,14 +87,14 @@ function Home() {
               </div>
             </div>
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="w-full md:w-auto">
-              <Link
-                to="/search"
+              <button
+                type="submit"
                 className="block w-full bg-[#bc13fe] text-white px-10 py-4 rounded-xl font-bold font-label-caps neon-glow-primary text-center"
               >
                 SEARCH
-              </Link>
+              </button>
             </motion.div>
-          </div>
+          </form>
         </motion.div>
       </section>
 

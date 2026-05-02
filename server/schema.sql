@@ -154,7 +154,7 @@ DELIMITER ;
 INSERT IGNORE INTO USERS (name, email, password, role) VALUES
   ('Rail Admin',
    'admin@velocityrail.com',
-   '$2a$10$aO2lULrkOh/b3LQEzeDbyOyHYR7IB.uakaNdIKXm8hrB9VgmMU6nq',
+   '$2a$10$s2dAwoDWsuR9ZPe9pQiltuX.f7XZ7z9Z5DrZ9eLWaubEo4X7.37Jm',
    -- plain: admin123 (real bcrypt hash)
    'admin');
 
