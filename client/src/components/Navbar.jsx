@@ -22,6 +22,7 @@ function Navbar() {
     navLinks = [
       { label: 'Network',  to: '/dashboard' },
       { label: 'Search',     to: '/search' },
+      { label: 'About',      to: '/about' },
       { label: 'My Tickets', to: '/tickets' },
     ]
   } else {
@@ -29,6 +30,7 @@ function Navbar() {
       { label: 'Home',       to: '/' },
       { label: 'Network',  to: '/dashboard' },
       { label: 'Search',     to: '/search' },
+      { label: 'About',      to: '/about' },
     ]
   }
 
@@ -72,10 +74,6 @@ function Navbar() {
           </>
         ) : (
           <>
-            <span className="hidden md:flex items-center gap-4 text-slate-400">
-              <span className="material-symbols-outlined cursor-pointer hover:text-fuchsia-400 transition-colors">account_balance_wallet</span>
-              <span className="material-symbols-outlined cursor-pointer hover:text-fuchsia-400 transition-colors">notifications</span>
-            </span>
             <Link
               to="/login"
               className="bg-[#bc13fe] text-white px-6 py-2 rounded-full font-bold tracking-tight active:scale-95 transition-transform hover:shadow-[0_0_20px_rgba(188,19,254,0.5)]"

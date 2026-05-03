@@ -11,6 +11,7 @@ import AdminLogin     from './pages/AdminLogin'
 import MyTickets      from './pages/MyTickets'
 import SearchResults  from './pages/SearchResults'
 import LiveMap        from './pages/LiveMap'
+import About          from './pages/About'
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
         <Route path="/login"       element={<Login />} />
         <Route path="/signup"      element={<Signup />} />
         <Route path="/search"      element={<SearchResults />} />
+        <Route path="/about"       element={<About />} />
         <Route path="/admin/login" element={<AdminLogin />} />
 
         {/* Protected — any logged-in user */}
