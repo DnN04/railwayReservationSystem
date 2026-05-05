@@ -5,10 +5,10 @@ import api from '../services/api'
 import Navbar from '../components/Navbar'
 
 function Login() {
-  const navigate   = useNavigate()
-  const { login }  = useAuth()
-  const [form, setForm]     = useState({ email: '', password: '' })
-  const [error, setError]   = useState('')
+  const navigate = useNavigate()
+  const { login } = useAuth()
+  const [form, setForm] = useState({ email: '', password: '' })
+  const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value })
@@ -36,28 +36,28 @@ function Login() {
       <Navbar />
 
       {/* Left visual */}
-      <section className="hidden md:flex md:w-1/2 lg:w-3/5 relative overflow-hidden items-center justify-center p-12">
+      <section className="hidden md:flex md:w-1/2 lg:w-1/2 relative overflow-hidden items-center justify-center p-12">
         <div className="absolute inset-0 z-0">
-          <img className="w-full h-full object-cover opacity-80"
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuCwaSEN9WgiN46AzjeMOy-twmPWvBLeHlb_PFs9PoXwMNTbh1KcKvn17do5xm7UtdZF4Cvcu3VMkYHDbhKA0f7hj09wi2Lotugd8ZlrVB9-9GgJ7wIZst5QCmDQDmHlLmLfUAIuxoI3UfDYAGmXqrpHolFyq2hTrqmcXn2zx8uiYE82nyb80J3vni6NKIIKaabSVkxawHZnjTx_BIeJcNH2vKR2qYKR7gjKMHw2XwG2xUAfK_HwV1qnBKNizCka96Sk_9QX8eT2Bb8"
-            alt="Kinetic train" />
+          <img className="w-full h-full object-cover object-[10%_100%] opacity-80"
+            src="/images/railimage.jpeg"
+            alt="Vande Bharat Express" />
           <div className="absolute inset-0 bg-gradient-to-r from-transparent to-[#050505]"></div>
         </div>
-        <div className="relative z-10 max-w-xl">
+        <div className="relative z-10 max-w-xl w-full text-right ml-auto">
           <h1 className="font-display-lg text-display-lg text-white mb-6 uppercase tracking-tighter">
-            Rail Bandhu <br /><span className="text-[#bc13fe]">Redefined.</span>
+            Rail Bandhu <br /><span className="text-[#bc13fe]">Swadeshi.</span>
           </h1>
-          <p className="text-on-surface-variant font-body-base mb-8 max-w-md">
-            Experience the nexus of heavy infrastructure and premium software agility. Command your journey with surgical precision.
+          <p className="text-on-surface-variant font-body-base mb-8 max-w-md ml-auto">
+            Experience the pride of Indian Railways fused with next-gen software agility. Command your journey with seamless, intelligent routing.
           </p>
-          <div className="flex gap-6">
+          <div className="flex gap-6 justify-end">
             <div className="border border-white/10 px-4 py-2 rounded-lg flex items-center gap-3" style={{ backdropFilter: 'blur(20px)', background: 'rgba(255,255,255,0.05)' }}>
-              <span className="material-symbols-outlined text-[#00e46b]">speed</span>
-              <span className="font-data-mono text-white">650 KM/H</span>
+              <span className="material-symbols-outlined text-[#00e46b]">train</span>
+              <span className="font-data-mono text-white">INDIAN RAILWAYS</span>
             </div>
             <div className="border border-white/10 px-4 py-2 rounded-lg flex items-center gap-3" style={{ backdropFilter: 'blur(20px)', background: 'rgba(255,255,255,0.05)' }}>
-              <span className="material-symbols-outlined text-[#63f7ff]">bolt</span>
-              <span className="font-data-mono text-white">ZERO EMISSIONS</span>
+              <span className="material-symbols-outlined text-[#63f7ff]">route</span>
+              <span className="font-data-mono text-white">SMART ROUTING</span>
             </div>
           </div>
         </div>
@@ -121,10 +121,10 @@ function Login() {
           </div>
         </div>
 
-        <div className="absolute bottom-8 flex gap-8">
+        {/* <div className="absolute bottom-8 flex gap-8">
           <span className="font-label-caps text-[10px] text-[#504254]">SYSTEM v.4.0.2</span>
           <span className="font-label-caps text-[10px] text-[#504254]">ENCRYPTED NEXUS</span>
-        </div>
+        </div> */}
       </section>
 
       <div className="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-[#bc13fe]/10 blur-[120px] rounded-full z-[-1]"></div>

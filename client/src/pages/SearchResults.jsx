@@ -44,7 +44,7 @@ function SearchResults() {
       <main className="pt-32 pb-12 px-8 max-w-7xl mx-auto">
 
         {/* Search bar */}
-        <form onSubmit={handleSearch} className="flex flex-col md:flex-row gap-4 mb-10">
+        <form onSubmit={handleSearch} className="bg-[#131314]/40 backdrop-blur-3xl rounded-[22px] p-6 md:p-8 flex flex-col md:flex-row gap-4 mb-10 border border-white/5 shadow-2xl">
           <div className="relative flex-1">
             <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">location_on</span>
             <input required value={source} onChange={(e) => setSource(e.target.value)}

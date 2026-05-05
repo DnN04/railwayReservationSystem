@@ -173,3 +173,7 @@ INSERT IGNORE INTO TRAIN_FARE (train_code, class, fare) VALUES
   ('KR-303','Economy',  650.00), ('KR-303','Business', 1200.00), ('KR-303','First', 2000.00),
   ('KR-411','Economy',  450.00), ('KR-411','Business',  800.00), ('KR-411','First', 1400.00),
   ('KR-505','Economy',  250.00), ('KR-505','Business',  450.00), ('KR-505','First',  750.00);
+
+SELECT * FROM PASSENGER;
+SELECT * FROM TRAIN;
+SELECT * FROM BOOKED_TICKETS_VIEW;
