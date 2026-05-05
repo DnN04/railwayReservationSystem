@@ -6,6 +6,7 @@
 
 Traditional railway booking systems often suffer from outdated interfaces, confusing navigation, and a lack of intelligent routing. Users struggle to find connecting trains when direct routes are unavailable, leading to a frustrating and time-consuming booking experience.
 
+![home](<Screenshot 2026-05-05 181427.png>)
 **Rail Bandhu** introduces a sleek, user-centric interface coupled with a **Smart Connections** algorithm. It dynamically calculates multi-leg journeys, offering seamless connectivity suggestions and unified booking flows to ensure you reach your destination effortlessly. 
 
 This project is built heavily utilizing modern **DBMS concepts** to ensure data consistency, reliability, and lightning-fast retrieval of information.
@@ -16,11 +17,12 @@ This project is built heavily utilizing modern **DBMS concepts** to ensure data 
 
 - **Intelligent Routing:** Smart Connections algorithm to suggest multi-leg journeys when direct routes are unavailable.
 - **Hyper-Speed UI:** A seamless, single-page application experience with zero loading screens for instant searches.
-- **Modern Aesthetic:** Desi-inspired cyberpunk/vibrant dark mode UI featuring glassmorphism, Framer Motion animations, and responsive design.
+- **Modern Aesthetic:** Indian art-inspired cyberpunk/vibrant dark mode UI featuring glassmorphism, Framer Motion animations, and responsive design.
+![login](<Screenshot 2026-05-05 181442.png>)
 - **Secure Bookings:** robust authentication and authorization using JWT-protected routes and secure DB triggers.
 - **Total Control (Admin Dashboard):** Dedicated portal for administrators to manage trains, routes, and bookings effectively.
 - **Live Search & Network Map:** Dynamic, real-time availability checking and booking flows.
-
+![map](<Screenshot 2026-05-05 181528.png>)
 ---
 
 ## 🛠️ Tech Stack
